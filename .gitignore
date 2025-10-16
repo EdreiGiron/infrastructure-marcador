@@ -1,0 +1,16 @@
+node_modules/
+dist/
+# IDE
+.vscode/
+.idea/
+# Docker
+**/.env
+**/*.env
+**/volumes/
+# Certs & secrets (no subir)
+nginx/letsencrypt/
+**/appsettings*.json   # si contienen secretos; si quieres, sube *.example
+**/secrets/
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,40 @@
+networks:
+  appnet:
+
+volumes:
+  sql_data:
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: marcador-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@sswordSeguro123
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks: [appnet]
+
+  backend:
+    build:
+      context: ./backend-marcador/Marcador.Api
+      dockerfile: Dockerfile
+    container_name: marcador-backend
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
+      # Usa appsettings.json del proyecto (ya apunta a sqlserver,1433)
+    depends_on: [sqlserver]
+    networks: [appnet]
+    ports:
+      - "5002:8080"  # Host:5002 → Contenedor:8080
+
+  frontend:
+    build:
+      context: ./frontend-baloncesto
+      dockerfile: Dockerfile
+    container_name: marcador-frontend
+    networks: [appnet]
+    ports:
+      - "4200:80"    # Host:4200 → Contenedor:80
